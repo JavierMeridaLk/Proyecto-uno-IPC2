@@ -102,6 +102,34 @@ public class Usuario {
         return existe;
     }
     
+    public boolean iniciarSesion(Usuario user){
+        ResultSet resultSet = null;
+        conexionDB conexion = new conexionDB();
+        String query = "SELECT password FROM USUARIO WHERE user_name = ?";
+        
+        try {
+            // Obtén la conexión
+                
+            // Prepara la consulta
+            preparedStatement = conexion.getConnection().prepareStatement(query);
+            preparedStatement.setString(1, userName);
+            
+            // Ejecuta la consulta
+            resultSet = preparedStatement.executeQuery();
+            
+            // Verifica las credenciales
+            if (resultSet.next()) {
+                String storedPassword = resultSet.getString("password");
+                // Compara la contraseña proporcionada con la almacenada
+                return BCrypt.checkpw(password, storedPassword);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            conexion.cerrarConnection(conexion.getConnection());
+        }
+        return false;
+    }
 
     public String getUserName() {
         return userName;

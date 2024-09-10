@@ -73,6 +73,7 @@ public class crearUsuarioSvt extends HttpServlet {
             }else{
                 try {
                     nuevoUser.crearUsuario(user, password, passwordConfirm, tipo, billetera);
+                    response.sendRedirect("Login.jsp");
                 } catch (SQLException ex) {
                     Logger.getLogger(crearUsuarioSvt.class.getName()).log(Level.SEVERE, null, ex);
                 }

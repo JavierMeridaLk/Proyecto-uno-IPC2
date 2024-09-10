@@ -17,7 +17,7 @@
 --%>
         
         <form method="POST" action="crearUsuarioSvt">
-    <table>
+        <table>
         <!-- Fila para el campo de nombre de usuario -->
         <tr>
             <td><label for="user">Nuevo usuario:</label></td>
