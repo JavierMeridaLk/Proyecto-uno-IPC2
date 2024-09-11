@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -37,15 +38,21 @@ public class inicioDeSesionSvt extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         processRequest(request, response);
         Usuario user = new Usuario();
         user.setUserName(request.getParameter("User"));
         user.setPassword(request.getParameter("Password"));
+        
         if (user.iniciarSesion(user)) {
+             HttpSession session = request.getSession();
+            session.setAttribute("userName", user.getUserName());
             System.out.println("inicio sesion");
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("Perfil.jsp");
+            System.out.println(user.getTipo());
         }else{
             response.sendRedirect("Login.jsp?error=true");
+            System.out.println("no inicar sesion");
         }
         
     }

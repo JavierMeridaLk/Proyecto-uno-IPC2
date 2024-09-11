@@ -5,6 +5,7 @@
 package backen.usuarios;
 
 import backen.DataBase.conexionDB;
+import enums.tipoUser;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +20,8 @@ public class Usuario {
     private String userName;
     private String password;
     private String passwordConfirm;
-    private String tipo;
+    private tipoUser tipo;
+    private String tipoSt;
     private double billetera;
     PreparedStatement preparedStatement;
     
@@ -31,7 +33,7 @@ public class Usuario {
         this.userName=user;
         this.password= password;
         this.passwordConfirm= passwordConfirm;
-        this.tipo=tipo;
+        this.tipoSt=tipo;
         this.billetera= billetera;
         String contraseñaEncriptada = BCrypt.hashpw(password, BCrypt.gensalt());
         
@@ -46,9 +48,10 @@ public class Usuario {
         preparedStatement = conexion.getConnection().prepareStatement(sql);
         preparedStatement.setString(1, userName);
         preparedStatement.setBigDecimal(2, BigDecimal.valueOf(billetera)); 
-        preparedStatement.setString(3, tipo); 
+        preparedStatement.setString(3, tipoSt); 
         preparedStatement.setString(4, contraseñaEncriptada); 
         
+            
         
         int result = preparedStatement.executeUpdate();
 
@@ -63,11 +66,25 @@ public class Usuario {
         
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
+        }
+        try {
+                String querryPerfil = "INSERT INTO PERFIL (user) VALUES (?)";
+                preparedStatement = conexion.getConnection().prepareStatement(querryPerfil);
+                preparedStatement.setString(1, userName);
+                int result1 = preparedStatement.executeUpdate();
+                if (result1 > 0) {
+                    // Redirigir a una página de éxito o mostrar un mensaje de éxito
+                    System.out.println("registro_exitoso");
+                } else {
+                    // Manejar el fallo en la inserción
+                    System.out.println("error");
+
+                }
+            } catch (SQLException e) {
+                 e.printStackTrace();
+            }finally {
             conexion.cerrarConnection(conexion.getConnection());
         }
-        
-        
         
         
     }
@@ -105,7 +122,7 @@ public class Usuario {
     public boolean iniciarSesion(Usuario user){
         ResultSet resultSet = null;
         conexionDB conexion = new conexionDB();
-        String query = "SELECT password FROM USUARIO WHERE user_name = ?";
+        String query = "SELECT password, tipo_usuario FROM USUARIO WHERE BINARY user_name = ?";
         
         try {
             // Obtén la conexión
@@ -120,8 +137,17 @@ public class Usuario {
             // Verifica las credenciales
             if (resultSet.next()) {
                 String storedPassword = resultSet.getString("password");
+                String tipoUsuarioStr = resultSet.getString("tipo_usuario");
                 // Compara la contraseña proporcionada con la almacenada
-                return BCrypt.checkpw(password, storedPassword);
+                if (BCrypt.checkpw(user.getPassword(), storedPassword)) {
+                // Convierte el tipo de usuario (String) en el valor correspondiente del enum
+                tipoUser tipo1 = tipoUser.valueOf(tipoUsuarioStr.toUpperCase());
+                
+                // Asigna el tipo al usuario
+                tipo=tipo1;
+                
+                return true; // Login exitoso
+            }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -155,11 +181,11 @@ public class Usuario {
         this.passwordConfirm = passwordConfirm;
     }
 
-    public String getTipo() {
+    public tipoUser getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(tipoUser tipo) {
         this.tipo = tipo;
     }
 
