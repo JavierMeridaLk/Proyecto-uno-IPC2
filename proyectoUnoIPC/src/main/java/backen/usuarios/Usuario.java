@@ -119,43 +119,49 @@ public class Usuario {
         return existe;
     }
     
-    public boolean iniciarSesion(Usuario user){
-        ResultSet resultSet = null;
-        conexionDB conexion = new conexionDB();
-        String query = "SELECT password, tipo_usuario FROM USUARIO WHERE BINARY user_name = ?";
+    public boolean iniciarSesion(Usuario user) {
+    ResultSet resultSet = null;
+    PreparedStatement preparedStatement = null;
+    conexionDB conexion = new conexionDB();
+    String query = "SELECT password, tipo_usuario FROM USUARIO WHERE BINARY user_name = ?";
+
+    try {
+        // Obtén la conexión
         
-        try {
-            // Obtén la conexión
-                
-            // Prepara la consulta
-            preparedStatement = conexion.getConnection().prepareStatement(query);
-            preparedStatement.setString(1, userName);
-            
-            // Ejecuta la consulta
-            resultSet = preparedStatement.executeQuery();
-            
-            // Verifica las credenciales
-            if (resultSet.next()) {
-                String storedPassword = resultSet.getString("password");
-                String tipoUsuarioStr = resultSet.getString("tipo_usuario");
-                // Compara la contraseña proporcionada con la almacenada
-                if (BCrypt.checkpw(user.getPassword(), storedPassword)) {
-                // Convierte el tipo de usuario (String) en el valor correspondiente del enum
+
+        // Prepara la consulta
+        preparedStatement = conexion.getConnection().prepareStatement(query);
+        preparedStatement.setString(1, user.getUserName()); // Asegúrate de obtener el nombre de usuario de `user`
+
+        // Ejecuta la consulta
+        resultSet = preparedStatement.executeQuery();
+
+        // Verifica las credenciales
+        if (resultSet.next()) {
+            String storedPassword = resultSet.getString("password");
+            String tipoUsuarioStr = resultSet.getString("tipo_usuario");
+
+            // Compara la contraseña proporcionada con la almacenada (usando BCrypt)
+            if (BCrypt.checkpw(user.getPassword(), storedPassword)) {
+                // Convierte el tipo de usuario (String) al valor correspondiente del enum
                 tipoUser tipo1 = tipoUser.valueOf(tipoUsuarioStr.toUpperCase());
-                
+
                 // Asigna el tipo al usuario
-                tipo=tipo1;
-                
+                user.setTipo(tipo1);
+
                 return true; // Login exitoso
             }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            conexion.cerrarConnection(conexion.getConnection());
         }
-        return false;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        // Cerrar recursos
+       conexion.cerrarConnection(conexion.getConnection());
     }
+
+    return false;
+}
+
 
     public String getUserName() {
         return userName;
