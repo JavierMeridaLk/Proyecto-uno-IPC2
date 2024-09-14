@@ -8,11 +8,13 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <jsp:include page="/includes/resources.jsp"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Perfil</title>
         
     </head>
     <body>
+        <jsp:include page="/includes/Headers.jsp"/>
         <%
             //HttpSession session = request.getSession(false);
             if (session != null) {
@@ -28,4 +30,5 @@
         %>
         <h1>Hello World!</h1>
     </body>
+    <jsp:include page="/includes/Footer.jsp"/>
 </html>
