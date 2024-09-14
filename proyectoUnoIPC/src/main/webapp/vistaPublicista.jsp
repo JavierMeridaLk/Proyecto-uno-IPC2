@@ -8,10 +8,13 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <jsp:include page="/includes/resources.jsp"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Publicista</title>
     </head>
     <body>
+        <jsp:include page="/includes/Headers.jsp"/>
         <h1>Vista publicista</h1>
     </body>
+    <jsp:include page="/includes/Footer.jsp"/>
 </html>

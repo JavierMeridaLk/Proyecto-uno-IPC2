@@ -12,6 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <jsp:include page="/includes/Headers.jsp"/>
         <h1>Hello World!</h1>
     </body>
 </html>
