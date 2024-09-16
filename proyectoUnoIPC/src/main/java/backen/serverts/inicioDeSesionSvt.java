@@ -64,7 +64,7 @@ public class inicioDeSesionSvt extends HttpServlet {
                 }
                 
                 if (tipoUsuarioStr.equals(tipoUser.ADMINISTRADOR.name())) {
-                    response.sendRedirect("vistaAdmin.jsp");
+                    response.sendRedirect("admin/adminJsp.jsp");
                 } else if (tipoUsuarioStr.equals(tipoUser.AUTOR.name())) {
                     response.sendRedirect("vistaAutor.jsp");
                 } else if (tipoUsuarioStr.equals(tipoUser.LECTOR.name())) {
