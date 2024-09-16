@@ -70,7 +70,7 @@ public class inicioDeSesionSvt extends HttpServlet {
                 } else if (tipoUsuarioStr.equals(tipoUser.LECTOR.name())) {
                     response.sendRedirect("vistaLectores.jsp");
                 } else if (tipoUsuarioStr.equals(tipoUser.PUBLICISTA.name())) {
-                    response.sendRedirect("vistaPublicista.jsp");
+                    response.sendRedirect("publicista/publicistaJsp.jsp");
                 }
 
             } catch (SQLException e) {
