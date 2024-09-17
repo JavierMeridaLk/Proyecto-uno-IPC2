@@ -54,9 +54,19 @@ public class compraAnunciosSvt extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession(false);
+        String  userName="";
+        if (session != null) {
+                userName = (String) session.getAttribute("userName");
+                if (userName != null) {
+                    out.println("Bienvenido, " + userName);
+                } else {
+                    out.println("No estás logueado.");
+                }
+            } else {
+                out.println("No estás logueado.");
+            }
         
-        String usuario = (String) session.getAttribute("userName");
-        out.println("Bienvenido, " + usuario);
+        
         String tipoAnuncio = request.getParameter("tipoAnuncio");
        
         String tiempoVigente = request.getParameter("tiempoAnuncio");
@@ -98,7 +108,7 @@ public class compraAnunciosSvt extends HttpServlet {
             String insertCompra = "INSERT INTO COMPRAR (usuario, anuncio, fecha_pago, precio) "
                                 + "VALUES (?, ?, ?, ?)";
             PreparedStatement psInsert = conexion.getConnection().prepareStatement(insertCompra);
-            psInsert.setString(1, usuario);
+            psInsert.setString(1, userName);
             psInsert.setString(2, tipoAnuncio);
             psInsert.setDate(3, fechaPago);
             psInsert.setBigDecimal(4, precio);
@@ -106,7 +116,7 @@ public class compraAnunciosSvt extends HttpServlet {
             int rowsAffected = psInsert.executeUpdate();
 
             if (rowsAffected > 0) {
-                response.getWriter().println("Compra realizada con éxito.");
+                out.println("Compra realizada con éxito.");
             } else {
                 response.getWriter().println("Error al realizar la compra.");
             }
