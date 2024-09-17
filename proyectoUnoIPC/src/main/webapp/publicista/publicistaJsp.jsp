@@ -4,6 +4,8 @@
     Author     : xavi
 --%>
 
+
+<%@page import="backen.anuncios.Anuncio"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -18,7 +20,7 @@
 
     <body>
         <jsp:include page="/includes/Headers.jsp"/>
-
+        
         <div class="barra-izquierda">
             <jsp:include page="/includes/barraAI.jsp"/>
         </div>
@@ -64,7 +66,6 @@
                             </tbody>
                         </table>
                         <p class="col-md-8 fs-4">Seleccione el tipo de anuncio y el tiempo que estará vigente:</p>
-
                         <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="tipoAnuncio" name="tipoAnuncio" required >
                             <option selected>Seleccione un tipo de Anuncio</option>
                             <option value="TEXTO">TEXTO</option>
@@ -84,29 +85,52 @@
                         <br>
                         <button class="btn btn-primary btn-lg" type="submit">Comprar anuncio</button>
                     </form>
-
                 </div>
             </div>
+                        
             <br><!-- comment -->
+            
             <div class="p-5 mb-4 bg-body-tertiary rounded shadow-lg">
                 <div class="container-fluid py-5">
-                    <h1 class="display-5 fw-bold">Anuncios activos</h1>
-                    <p class="col-md-8 fs-4">Listado de anuncios activos. Puede desactivarlos cuando lo desee.</p>
-
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Tipo de anuncio</th>
-                                <th scope="col">Tiempo Vigente</th>
-                                <th scope="col">Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-
-                            </tr>
-                        </tbody>
-                    </table>
+                    <form method="GET" action="${pageContext.servletContext.contextPath}/compraAnunciosSvt">
+                        <h1 class="display-5 fw-bold">Anuncios activos</h1>
+                        <p class="col-md-8 fs-4">Listado de anuncios activos. Puede desactivarlos cuando lo desee.</p>
+                        
+                        <button class="btn btn-primary btn-lg" type="submit">Ver anuncios activos</button>
+                        <br>
+                        <br>
+                        <%
+                            Anuncio[] anuncios = (Anuncio[]) request.getAttribute("anuncios");
+                            if (anuncios != null && anuncios.length > 0) {
+                        %>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Tipo de anuncio</th>
+                                    <th scope="col">Fecha de compra</th>
+                                    <th scope="col">Fecha limite</th>
+                                    <th scope="col">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for (Anuncio anuncio : anuncios) {%>
+                                <tr>
+                                    <td><%= anuncio.getAnuncio()%></td>
+                                    <td><%= anuncio.getFechaPago()%></td>
+                                    <td><%= anuncio.getFechaLimite()%></td>
+                                    <td>Activo</td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                        <%
+                        } else {
+                        %>
+                        <p>No se encontraron anuncios activos.</p>
+                        <%
+                            }
+                        %>
+                    </form>
                 </div>
             </div>
         </div>
@@ -116,6 +140,5 @@
         </div>
         <!-- Footer -->
         <jsp:include page="/includes/Footer.jsp"/>
-
     </body>
 </html>
