@@ -106,7 +106,7 @@ public class Revista {
         this.estadoSuscripciones = estadoSuscripciones;
     }
 
-    public List<Revista> obtenerTodasLasRevistas(String user) throws SQLException {
+    public List<Revista> obtenerTodasLasRevistasDelAutor(String user) throws SQLException {
         List<Revista> revistas = new ArrayList<>();
         conexionDB conexion = new conexionDB();
         PreparedStatement ps = null;
@@ -119,6 +119,7 @@ public class Revista {
             int i = 0;
             while (rs.next()) {
                 Revista revista = new Revista();
+                revista.setNombreAutor(rs.getString("user_autor"));
                 revista.setNombreRevista(rs.getString("nombre_revista"));
                 revista.setFechaPublicacion(rs.getDate("fecha_publicacion").toLocalDate());
                 revista.setDescripcion(rs.getString("descripcion"));
@@ -126,6 +127,39 @@ public class Revista {
                 revista.setEstadoComentarios(rs.getBoolean("estado_comentario"));
                 revista.setEstadoMeGustas(rs.getBoolean("estado_me_gustas"));
                 revista.setEstadoSuscripciones(rs.getBoolean("estado_suscripciones"));
+                revista.setCosto(rs.getBigDecimal("costo").doubleValue());
+                revistas.add(revista);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            out.println("Error en la base de datos: " + e.getMessage());
+        } finally {
+            conexion.cerrarConnection(conexion.getConnection());
+        }
+        return revistas;
+    }
+    public List<Revista> obtenerTodasLasRevistas() throws SQLException {
+        List<Revista> revistas = new ArrayList<>();
+        conexionDB conexion = new conexionDB();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String query = "SELECT * FROM REVISTA ";
+            ps = conexion.getConnection().prepareStatement(query);
+            
+            rs = ps.executeQuery();
+            int i = 0;
+            while (rs.next()) {
+                Revista revista = new Revista();
+                revista.setNombreAutor(rs.getString("user_autor"));
+                revista.setNombreRevista(rs.getString("nombre_revista"));
+                revista.setFechaPublicacion(rs.getDate("fecha_publicacion").toLocalDate());
+                revista.setDescripcion(rs.getString("descripcion"));
+                revista.setCategoria(rs.getString("categoria"));
+                revista.setEstadoComentarios(rs.getBoolean("estado_comentario"));
+                revista.setEstadoMeGustas(rs.getBoolean("estado_me_gustas"));
+                revista.setEstadoSuscripciones(rs.getBoolean("estado_suscripciones"));
+                revista.setCosto(rs.getBigDecimal("costo").doubleValue());
                 revistas.add(revista);
             }
         } catch (SQLException e) {

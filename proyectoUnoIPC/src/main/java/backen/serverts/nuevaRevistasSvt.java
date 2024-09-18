@@ -42,7 +42,7 @@ public class nuevaRevistasSvt extends HttpServlet {
         }
         try {
             Revista revista = new Revista();
-            List<Revista> revistas = revista.obtenerTodasLasRevistas(userName);
+            List<Revista> revistas = revista.obtenerTodasLasRevistasDelAutor(userName);
             // Establece las revistas en el request
             request.setAttribute("revistas", revistas);
             // Redirige a la JSP

@@ -68,7 +68,7 @@ public class inicioDeSesionSvt extends HttpServlet {
                 } else if (tipoUsuarioStr.equals(tipoUser.AUTOR.name())) {
                     response.sendRedirect("autor/autorJsp.jsp");
                 } else if (tipoUsuarioStr.equals(tipoUser.LECTOR.name())) {
-                    response.sendRedirect("vistaLectores.jsp");
+                    response.sendRedirect(request.getContextPath()+"/lectorJsp");
                 } else if (tipoUsuarioStr.equals(tipoUser.PUBLICISTA.name())) {
                     response.sendRedirect("publicista/publicistaJsp.jsp");
                 }

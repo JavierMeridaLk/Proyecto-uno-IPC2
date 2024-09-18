@@ -29,9 +29,9 @@
         <div class="container">
             <div class="p-5 mb-4 bg-body-tertiary rounded shadow-lg">
                 <div class="container-fluid py-5">
+                    <h1 class="display-5 fw-bold">Publicar revista</h1>
+                    <button class="btn btn-primary btn-lg" type="button" id="btnNuevaRevista">Nueva revista</button>
                     <form id="formNuevaRevista" method="POST" action="${pageContext.servletContext.contextPath}/nuevaRevistasSvt">
-                        <h1 class="display-5 fw-bold">Publicar revista</h1>
-                        <button class="btn btn-primary btn-lg" type="button" id="btnNuevaRevista">Nueva revista</button>
                         <h2>Nueva Revista</h2>
                         <table>
                             <tr>
