@@ -3,11 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package backen.serverts;
-
 import Revistas.Revista;
 import backen.DataBase.conexionDB;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,21 +14,48 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import static java.lang.System.out;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-
+import java.util.List;
 /**
  *
  * @author xavi
  */
 @WebServlet(name = "nuevaRevistasSvt", urlPatterns = {"/nuevaRevistasSvt"})
 public class nuevaRevistasSvt extends HttpServlet {
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
         response.setContentType("text/html;charset=UTF-8");
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        String userName = "";
+        if (session != null) {
+            userName = (String) session.getAttribute("userName");
+        }
+        if (userName == null || userName.isEmpty()) {
+            response.getWriter().println("No estás logueado.");
+            return;
+        }
+        try {
+            Revista revista = new Revista();
+            List<Revista> revistas = revista.obtenerTodasLasRevistas(userName);
+            // Establece las revistas en el request
+            request.setAttribute("revistas", revistas);
+            // Redirige a la JSP
+            request.getRequestDispatcher("/autor/autorJsp.jsp").forward(request, response);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.getWriter().println("Error al obtener las revistas.");
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         String userName = "";
         if (session != null) {
@@ -63,11 +88,7 @@ public class nuevaRevistasSvt extends HttpServlet {
         revista.setEstadoComentarios(comentarios); // Lo mismo para comentarios
         revista.setEstadoSuscripciones(suscripciones); // Y para suscripciones
         revista.setCosto(10.00);
-        
         conexionDB conexion = new conexionDB();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        
 
         try {
             String query = "INSERT INTO REVISTA (user_autor, nombre_revista, categoria, descripcion, "
@@ -83,10 +104,11 @@ public class nuevaRevistasSvt extends HttpServlet {
             psInsert.setBoolean(7, revista.isEstadoComentarios());
             psInsert.setBoolean(8, revista.isEstadoMeGustas());
             psInsert.setBoolean(9, revista.isEstadoSuscripciones());
+
             int rowsAffected = psInsert.executeUpdate();
             if (rowsAffected > 0) {
                 response.getWriter().println("Compra realizada con éxito.");
-                
+
                 request.getRequestDispatcher("autor/autorJsp.jsp").forward(request, response);
 
             } else {
@@ -95,21 +117,9 @@ public class nuevaRevistasSvt extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
             response.getWriter().println("Error en la base de datos: " + e.getMessage());
-        }finally {
+        } finally {
             conexion.cerrarConnection(conexion.getConnection());
         }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
 
     }
 

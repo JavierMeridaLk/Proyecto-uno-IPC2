@@ -3,7 +3,7 @@
     Created on : 17 sept 2024, 16:12:04
     Author     : xavi
 --%>
-
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -29,12 +29,10 @@
         <div class="container">
             <div class="p-5 mb-4 bg-body-tertiary rounded shadow-lg">
                 <div class="container-fluid py-5">
-                    <h1 class="display-5 fw-bold">Publicar revista</h1>
-                    <button class="btn btn-primary btn-lg" type="button" id="btnNuevaRevista">Nueva revista</button>
-
                     <form id="formNuevaRevista" method="POST" action="${pageContext.servletContext.contextPath}/nuevaRevistasSvt">
+                        <h1 class="display-5 fw-bold">Publicar revista</h1>
+                        <button class="btn btn-primary btn-lg" type="button" id="btnNuevaRevista">Nueva revista</button>
                         <h2>Nueva Revista</h2>
-
                         <table>
                             <tr>
                                 <th><label for="titulo">Nombre de la revista:</label></th>
@@ -70,7 +68,6 @@
                         // Selecciona el botón y el formulario
                         const btnNuevaRevista = document.getElementById("btnNuevaRevista");
                         const formNuevaRevista = document.getElementById("formNuevaRevista");
-
                         // Agrega un evento click al botón
                         btnNuevaRevista.addEventListener("click", function () {
                             // Oculta el botón
@@ -82,24 +79,67 @@
                 </div>
             </div>
             <br><!-- comment -->
-            <div class="p-5 mb-4 bg-body-tertiary rounded shadow-lg">
-                <div class="container-fluid py-5">
-                    <h1 class="display-5 fw-bold">Nombre revista</h1>
-                    <table>
-                        <tr>
-                            <th> <button class="btn btn-primary btn-lg" type="button">Subir nuevo tomo</button> </th>
-                            <th> <button class="btn btn-primary btn-lg" type="button">Habilitar Likes</button> </th>
-                            <th> <button class="btn btn-primary btn-lg" type="button">Habilitar Comentarios</button> </th>
-                            <th> <button class="btn btn-primary btn-lg" type="button">Habilitar Suscripciones</button> </th>
-
-                            <th> <button class="btn btn-primary btn-lg" type="button">Deshabilitar Me gustas</button> </th>
-                            <th> <button class="btn btn-primary btn-lg" type="button">Deshabilitar Comentarios</button> </th>
-                            <th> <button class="btn btn-primary btn-lg" type="button">Deshabilitar Suscripciones</button> </th>
-                        </tr>
-                    </table>
+            <form method="GET" action="${pageContext.servletContext.contextPath}/nuevaRevistasSvt">
+                <div class="p-5 mb-4 bg-body-terciary rounded shadow-lg">
+                    <div class="container-fluid py-5">
+                        <h1 class="card-title">Listado de Revistas</h1>
+                        <br>
+                        <button class="btn btn-primary btn-lg" type="submit">Desplegar listado de revistas</button>
+                        <br>
+                        <br>
+                        <c:forEach items="${revistas}" var="revista">
+                            <!-- Aquí puedes usar la variable 'revista' para acceder a las propiedades -->
+                            <div class="card-body">
+                                <h2 class="card-title">Nombre: ${revista.nombreRevista}</h2>
+                                <h4 class="card-subtitle mb-2 text-body-secondary">Descripción: ${revista.descripcion}</h4>
+                                <h4 class="card-subtitle mb-2 text-body-secondary">Categoría: ${revista.categoria}</h4>
+                                <h4 class="card-subtitle mb-2 text-body-secondary">Fecha de publicación: ${revista.fechaPublicacion}</h4>
+                            </div>
+                            <table>
+                                <tr>
+                                    <!-- Botón Nuevo tomo (siempre visible) -->
+                                    <th><button class="btn btn-primary btn-lg" type="button">Nuevo tomo</button></th>
+                                    <!-- Botones de Likes -->
+                                    <th>
+                                        <c:choose>
+                                            <c:when test="${revista.estadoMeGustas}">
+                                                <button class="btn btn-primary btn-lg" type="button">Deshabilitar Me gustas</button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button class="btn btn-primary btn-lg" type="button">Habilitar Me gustas</button>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </th>
+                                    <!-- Botones de Comentarios -->
+                                    <th>
+                                        <c:choose>
+                                            <c:when test="${revista.estadoComentarios}">
+                                                <button class="btn btn-primary btn-lg" type="button">Deshabilitar Comentarios</button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button class="btn btn-primary btn-lg" type="button">Habilitar Comentarios</button>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </th>
+                                    <!-- Botones de Suscripciones -->
+                                    <th>
+                                        <c:choose>
+                                            <c:when test="${revista.estadoSuscripciones}">
+                                                <button class="btn btn-primary btn-lg" type="button">Deshabilitar Suscripciones</button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button class="btn btn-primary btn-lg" type="button">Habilitar Suscripciones</button>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </th>
+                                </tr>
+                            </table>
+                            <hr>
+                        </c:forEach>
+                    </div>
                 </div>
-            </div>
-            <br><!-- comment -->
+            </form>
+            <br>
             <div class="p-5 mb-4 bg-body-tertiary rounded shadow-lg">
                 <div class="container-fluid py-5">
                     <h1 class="display-5 fw-bold">Reportes</h1>
