@@ -55,6 +55,7 @@
                             <h4 class="card-subtitle mb-2 text-body-secondary">Autor: ${revista.nombreAutor}</h4>
                             <h4 class="card-subtitle mb-2 text-body-secondary">Me gustas:</h4>
                         </div>
+
                         <table>
                             <tr>
                                 <!-- Botón Me gusta -->
@@ -118,7 +119,33 @@
                             <h4 class="card-subtitle mb-2 text-body-secondary">Autor: ${revista.nombreAutor}</h4>
                             <h4 class="card-subtitle mb-2 text-body-secondary">Me gustas:</h4>
                         </div>
+                        <form method="GET" action="${pageContext.servletContext.contextPath}/tomoLectorSvt" enctype="multipart/form-data">     
+                            <input type="hidden" name="codigo" value="${revista.codigo}">
+                            <table >
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del Archivo</th>
+                                        <th>Ver PDF</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="tomo" items="${tomos}">
+                                        <tr>
+                                            <td>${tomo.nombre}</td>
+                                            <td>
+                                                <a href="${pageContext.request.contextPath}/archivoSvt?codigo=${revista.codigo}&nombre=${tomo.nombre}&action=verPdf" target="_blank">
+                                                    Ver PDF
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-success">Ver tomos</button>
+                            <br>
+                        </form>
                         <hr>
+
                     </c:forEach>
                 </div>
             </div>

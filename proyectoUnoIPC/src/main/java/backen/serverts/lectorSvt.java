@@ -5,6 +5,7 @@
 package backen.serverts;
 
 import Revistas.Revista;
+import Revistas.archivoPdf;
 import backen.DataBase.conexionDB;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpSession;
 import static java.lang.System.out;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +37,8 @@ public class lectorSvt extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-HttpSession session = request.getSession(false);
+        List<Revista> revistas1;
+        HttpSession session = request.getSession(false);
         String userName = "";
         if (session != null) {
             userName = (String) session.getAttribute("userName");
@@ -60,7 +63,7 @@ HttpSession session = request.getSession(false);
         }
         try {
             Revista revista = new Revista();
-            List<Revista> revistas1 = revista.obtenerRevistasSuscritas(userName);
+            revistas1 = revista.obtenerRevistasSuscritas(userName);
             // Establece las revistas en el request
             request.setAttribute("revistas1", revistas1);
             // Redirige a la JSP
@@ -69,6 +72,7 @@ HttpSession session = request.getSession(false);
             e.printStackTrace();
             response.getWriter().println("Error al obtener las revistas.");
         }
+       
     }
 
     @Override
