@@ -62,7 +62,11 @@
                                 <th>
                                     <c:choose>
                                         <c:when test="${revista.estadoMeGustas}">
-                                            <button class="btn btn-primary btn-lg" type="button">Me gusta</button>
+                                            <form action="${pageContext.servletContext.contextPath}/registrarLikeSvt" method="post">
+                                                <input type="hidden" name="cod_revista" value="${revista.codigo}">
+                                                
+                                                <button class="btn btn-primary btn-lg" type="submit">Me gusta</button>
+                                            </form>
                                         </c:when>
                                     </c:choose>
                                 </th>
