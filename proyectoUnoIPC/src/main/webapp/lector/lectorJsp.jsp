@@ -64,7 +64,7 @@
                                         <c:when test="${revista.estadoMeGustas}">
                                             <form action="${pageContext.servletContext.contextPath}/registrarLikeSvt" method="post">
                                                 <input type="hidden" name="cod_revista" value="${revista.codigo}">
-                                                
+
                                                 <button class="btn btn-primary btn-lg" type="submit">Me gusta</button>
                                             </form>
                                         </c:when>
@@ -74,10 +74,33 @@
                                 <th>
                                     <c:choose>
                                         <c:when test="${revista.estadoComentarios}">
-                                            <button class="btn btn-primary btn-lg" type="button">Comentar</button>
+                                            <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="modal" data-bs-target="#comentarioModal">Comentar</button>
                                         </c:when>
                                     </c:choose>
                                 </th>
+
+                                <!-- Modal para escribir el comentario -->
+                            <div class="modal fade" id="comentarioModal" tabindex="-1" aria-labelledby="comentarioModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="comentarioModalLabel">Agregar Comentario</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="${pageContext.servletContext.contextPath}/RegistrarComentarioSvt" method="post">
+    <div class="mb-3">
+        <label for="contenido" class="form-label">Escribe tu comentario:</label>
+        <textarea id="contenido" name="contenido" class="form-control" rows="3" required></textarea>
+    </div>
+    <input type="hidden" name="no_revista_com" value="${revista.codigo}" />
+    <button type="submit" class="btn btn-primary">Enviar comentario</button>
+</form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             </tr>
                             <!-- Botón Suscribirse -->
                             <tr>
