@@ -40,4 +40,6 @@ public class Anuncio {
     public String getFechaLimite() {
         return fechaLimite;
     }
+    
+    
 }

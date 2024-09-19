@@ -6,6 +6,7 @@ package backen.serverts;
 
 import backen.DataBase.conexionDB;
 import backen.anuncios.Anuncio;
+import backen.anuncios.AnuncioPrecios;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -22,6 +23,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -49,9 +52,37 @@ public class compraAnunciosSvt extends HttpServlet {
             throws ServletException, IOException {
         // Establecer el tipo de contenido de respuesta como HTML
         response.setContentType("text/html;charset=UTF-8");
-        //PrintWriter out = response.getWriter();
 
-// Verificar que el usuario esté autenticado
+        conexionDB conexion = new conexionDB();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String query = "SELECT tipo_anuncio, precio_un_dia, precio_tres_dias, precio_una_semana, precio_dos_semanas FROM ANUNCIO";
+            ps = conexion.getConnection().prepareStatement(query);
+            rs = ps.executeQuery();
+
+            List<AnuncioPrecios> anunciosPre = new ArrayList<>();
+
+            while (rs.next()) {
+                AnuncioPrecios anuncioPrecios = new AnuncioPrecios();
+                anuncioPrecios.setTipoAnuncio(rs.getString("tipo_anuncio"));
+                anuncioPrecios.setPrecioUnDia(rs.getDouble("precio_un_dia")); // Usa Double en lugar de Integer
+                anuncioPrecios.setPrecioTresDias(rs.getDouble("precio_tres_dias")); // Usa Double en lugar de Integer
+                anuncioPrecios.setPrecioUnaSemana(rs.getDouble("precio_una_semana")); // Usa Double en lugar de Integer
+                anuncioPrecios.setPrecioDosSemanas(rs.getDouble("precio_dos_semanas")); // Usa Double en lugar de Integer
+                anunciosPre.add(anuncioPrecios);
+            }
+
+            // Establece la lista completa como atributo de solicitud
+            request.setAttribute("anunciosPre", anunciosPre);
+
+            // Redirige a la JSP
+        } catch (SQLException e) {
+            e.printStackTrace();
+            out.println("Error en la base de datos: " + e.getMessage());
+        }
+
         HttpSession session = request.getSession(false);
         String userName = "";
         if (session != null) {
@@ -65,10 +96,6 @@ public class compraAnunciosSvt extends HttpServlet {
             return;
         }
 
-        conexionDB conexion = new conexionDB();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
         // Primero contar el número de anuncios activos para el usuario
         int count = 0;
 
@@ -80,12 +107,11 @@ public class compraAnunciosSvt extends HttpServlet {
             if (rs.next()) {
                 count = rs.getInt(1);
             }
-            
+
             Anuncio[] anuncios = new Anuncio[count];
             rs.close(); // Cerrar el ResultSet anterior
             ps.close(); // Cerrar el PreparedStatement anterior
-            
-            
+
             // Consulta para obtener todas las compras donde el estado sea verdadero (1)
             String query = "SELECT anuncio, fecha_pago, estado, fecha_limite FROM COMPRAR WHERE usuario = ? AND estado = true";
             ps = conexion.getConnection().prepareStatement(query);
@@ -101,7 +127,7 @@ public class compraAnunciosSvt extends HttpServlet {
                 String fechaLimite = rs.getString("fecha_limite");
                 anuncios[i++] = new Anuncio(anuncio, fechaPago, estado, fechaLimite);
             }
-            
+
             request.setAttribute("anuncios", anuncios);
             request.getRequestDispatcher("publicista/publicistaJsp.jsp").forward(request, response);
 
