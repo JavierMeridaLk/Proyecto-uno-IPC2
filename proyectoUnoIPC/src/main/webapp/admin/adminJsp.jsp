@@ -3,7 +3,7 @@
     Created on : 15 sept 2024, 18:51:20
     Author     : xavi
 --%>
-
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -22,53 +22,53 @@
         <div class="container">
             <div class="p-5 mb-4 bg-body-tertiary rounded shadow-lg">
                 <div class="container-fluid py-5">
-                    <h1 class="display-5 fw-bold">Precios de los Anuncios</h1>
-                    <form>
+                    <h1 class="display-5 fw-bold">Actualizar Precios de Anuncios</h1>
+                    <form action="${pageContext.servletContext.contextPath}/actualizarPrecios" method="POST">
                         <p class="col-md-8 fs-4">Seleccione el tipo de anuncio, el tiempo y su nuevo precio:</p>
                         <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="tipoAnuncio" name="tipoAnuncio" required >
-                            <option selected>Seleccione un tipo de Anuncio</option>
+                            <option value="" disabled selected>Seleccione un tipo de anuncio</option>
                             <option value="TEXTO">TEXTO</option>
-                            <option value="TEXTO E IMAGEN">TEXTO E IMAGEN</option>
+                            <option value="IMGTXT">TEXTO E IMAGEN</option>
                             <option value="VIDEO">VIDEO</option>
                         </select>
                         <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="tiempoAnuncio" name="tiempoAnuncio" required >
-                            <option selected>Seleccione un tipo de Anuncio</option>
-                            <option value="TEXTO">1 día</option>
-                            <option value="TEXTO E IMAGEN">3 días</option>
-                            <option value="VIDEO">1 semana</option>
-                            <option value="VIDEO">2 semanas</option>
+                            <option value="" disabled selected>Seleccione un periodo</option>
+                            <option value="precio_un_dia">1 día</option>
+                            <option value="precio_tres_dias">3 días</option>
+                            <option value="precio_una_semana">1 semana</option>
+                            <option value="precio_dos_semanas">2 semanas</option>
                         </select>
-
-                        <label for="billetera" class="sr-only">Nuevo Precio:</label>
-                        <input id="precioNuevo" name="precioNuevo" type="number" min="1" step="1" class="form-control" placeholder="Precio nuevo" required >
-                        <br><!-- comment -->
-                        <button class="btn btn-primary btn-lg" type="button">Actualizar precio</button>
+                        <label for="precioNuevo" class="sr-only">Nuevo Precio:</label>
+                        <input id="precioNuevo" name="precioNuevo" type="number" min="0" step="0.01" class="form-control" placeholder="Precio nuevo" required >
+                        <br>
+                        <button class="btn btn-primary btn-lg" type="submit">Actualizar precio</button>
                     </form>
                 </div>
             </div>
-            <br><!-- comment -->
-            <div class="p-5 mb-4 bg-body-tertiary rounded shadow-lg">
-                <div class="container-fluid py-5">
-                    <h1 class="display-5 fw-bold">Costo de Revista</h1>
 
-                    <p class="col-md-8 fs-4">Seleccione la revista e ingrese su costo por día:</p>
-                    <form>
-                        <label for="revista" class="sr-only">Nombre de la revista</label>
-                        <input id="nomRevista" name="nomRevista" type="text" class="form-control" placeholder="Ingrese el nombre" required >
-                        <br><!-- comment -->
-                        <button class="btn btn-primary btn-lg" type="button">Buscar</button>
-                    </form>
                     <br><!-- comment -->
-                    <form>
-                        <label for="precio" class="sr-only">Precio de la revista por día</label>
-                        <input id="precioRevista" name="precioRevista" type="number" min="1" step="1" class="form-control" placeholder="Precio de la revista" required >
-                        <br><!-- comment -->
-                        <button class="btn btn-primary btn-lg" type="button">Actualizar precio</button>
-                    </form>
+                    <div class="p-5 mb-4 bg-body-tertiary rounded shadow-lg">
+                        <div class="container-fluid py-5">
+                            <h1 class="display-5 fw-bold">Costo de Revista</h1>
+                            <form action="${pageContext.servletContext.contextPath}/precioRevistaSvt" method="post">
+    <label for="revista" class="form-label">Seleccione la revista:</label>
+    <select class="form-select form-select-lg mb-3" id="revista" name="revista" required>
+        <option value="" disabled selected>Seleccione una revista</option>
+        <c:forEach var="revista" items="${revistas}">
+            <option value="${revista.codigo}">${revista.nombreRevista}</option>
+        </c:forEach>
+    </select>
+    <br><!-- comment -->
 
-                </div>
-            </div>
-            <br><!-- comment -->
+    <label for="precio" class="form-label">Precio de la revista por día</label>
+    <input id="precioRevista" name="precioRevista" type="number" min="1" step="0.01" class="form-control" placeholder="Precio de la revista" required>
+
+    <br><!-- comment -->
+    <button class="btn btn-primary btn-lg" type="submit">Actualizar precio</button>
+</form>
+                        </div>
+                    </div>
+                    <br><!-- comment -->
             <div class="p-5 mb-4 bg-body-tertiary rounded shadow-lg">
                 <div class="container-fluid py-5">
                     <h1 class="display-5 fw-bold">Reportes</h1>
@@ -88,7 +88,6 @@
             </div>
             <br><!-- comment -->
         </div>
-
         <div class="barra-derecha">
             <jsp:include page="/includes/barraAD.jsp"/>
         </div>
