@@ -5,6 +5,7 @@
 package backen.serverts;
 
 import Revistas.Revista;
+import backen.DataBase.conexionDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import static java.lang.System.out;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -23,39 +26,43 @@ import java.util.List;
 @WebServlet(name = "lectorJsp", urlPatterns = {"/lectorJsp"})
 public class lectorSvt extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-           throws ServletException, IOException {
-        
+            throws ServletException, IOException {
+HttpSession session = request.getSession(false);
+        String userName = "";
+        if (session != null) {
+            userName = (String) session.getAttribute("userName");
+            if (userName == null) {
+                out.println("No estás logueado.");
+                return;
+            }
+        } else {
+            out.println("No estás logueado.");
+            return;
+        }
         try {
             Revista revista = new Revista();
             List<Revista> revistas = revista.obtenerTodasLasRevistas();
             // Establece las revistas en el request
             request.setAttribute("revistas", revistas);
+            // Redirige a la JSP
+            //request.getRequestDispatcher("/lector/lectorJsp.jsp").forward(request, response);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.getWriter().println("Error al obtener las revistas.");
+        }
+        try {
+            Revista revista = new Revista();
+            List<Revista> revistas1 = revista.obtenerRevistasSuscritas(userName);
+            // Establece las revistas en el request
+            request.setAttribute("revistas1", revistas1);
             // Redirige a la JSP
             request.getRequestDispatcher("/lector/lectorJsp.jsp").forward(request, response);
         } catch (SQLException e) {
@@ -64,18 +71,48 @@ public class lectorSvt extends HttpServlet {
         }
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession(false);
+        String userName = "";
+        if (session != null) {
+            userName = (String) session.getAttribute("userName");
+        }
+        if (userName == null || userName.isEmpty()) {
+            response.getWriter().println("No estás logueado.");
+            return;
+        }
+
+        String fecha = request.getParameter("fecha");
+
+        // Obtener el nombre del autor desde el campo oculto
+        String codigo = request.getParameter("codigo");
+        conexionDB conexion = new conexionDB();
+        try {
+            String query = "INSERT INTO SUSCRIPCION (user_lector, codigo_revista, fecha_suscripcion) "
+                    + "VALUES (?, ?, ?)";
+            PreparedStatement psInsert = conexion.getConnection().prepareStatement(query);
+            psInsert.setString(1, userName);
+            psInsert.setString(2, codigo);
+            psInsert.setDate(3, java.sql.Date.valueOf(fecha));
+
+            int rowsAffected = psInsert.executeUpdate();
+            if (rowsAffected > 0) {
+                response.getWriter().println("Suscripcion realizada con éxito.");
+
+                response.sendRedirect(request.getContextPath() + "/lectorJsp");
+
+            } else {
+                response.getWriter().println("Error al realizar la suscripcion.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.getWriter().println("Error en la base de datos: " + e.getMessage());
+        } finally {
+            conexion.cerrarConnection(conexion.getConnection());
+        }
+
     }
 
     /**

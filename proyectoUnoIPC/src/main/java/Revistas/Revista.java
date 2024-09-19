@@ -27,6 +27,7 @@ public class Revista {
     private boolean estadoComentarios;
     private boolean estadoSuscripciones;
     private Double costo;
+    private int codigo;
 
     public Double getCosto() {
         return costo;
@@ -35,6 +36,15 @@ public class Revista {
     public void setCosto(Double costo) {
         this.costo = costo;
     }
+
+    public int getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
+    }
+    
 
     public Revista() {
         estadoMeGustas = true;
@@ -119,6 +129,8 @@ public class Revista {
             int i = 0;
             while (rs.next()) {
                 Revista revista = new Revista();
+                
+                
                 revista.setNombreAutor(rs.getString("user_autor"));
                 revista.setNombreRevista(rs.getString("nombre_revista"));
                 revista.setFechaPublicacion(rs.getDate("fecha_publicacion").toLocalDate());
@@ -151,6 +163,7 @@ public class Revista {
             int i = 0;
             while (rs.next()) {
                 Revista revista = new Revista();
+                revista.setCodigo(rs.getInt("cod_revista"));
                 revista.setNombreAutor(rs.getString("user_autor"));
                 revista.setNombreRevista(rs.getString("nombre_revista"));
                 revista.setFechaPublicacion(rs.getDate("fecha_publicacion").toLocalDate());
@@ -170,4 +183,43 @@ public class Revista {
         }
         return revistas;
     }
+    
+   public List<Revista> obtenerRevistasSuscritas(String userLector) throws SQLException {
+    List<Revista> revistas = new ArrayList<>();
+    conexionDB conexion = new conexionDB();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+        String query = "SELECT r.cod_revista, r.user_autor, r.nombre_revista, r.fecha_publicacion, " +
+                       "r.descripcion, r.categoria, r.estado_comentario, r.estado_me_gustas, " +
+                       "r.estado_suscripciones, r.costo " +
+                       "FROM SUSCRIPCION s " +
+                       "JOIN REVISTA r ON s.codigo_revista = r.cod_revista " +
+                       "WHERE s.user_lector = ?";
+        ps = conexion.getConnection().prepareStatement(query);
+        ps.setString(1, userLector); // Establecer el parámetro user_lector
+        rs = ps.executeQuery();
+        
+        while (rs.next()) {
+            Revista revista = new Revista();
+            revista.setCodigo(rs.getInt("cod_revista"));
+            revista.setNombreAutor(rs.getString("user_autor"));
+            revista.setNombreRevista(rs.getString("nombre_revista"));
+            revista.setFechaPublicacion(rs.getDate("fecha_publicacion").toLocalDate());
+            revista.setDescripcion(rs.getString("descripcion"));
+            revista.setCategoria(rs.getString("categoria"));
+            revista.setEstadoComentarios(rs.getBoolean("estado_comentario"));
+            revista.setEstadoMeGustas(rs.getBoolean("estado_me_gustas"));
+            revista.setEstadoSuscripciones(rs.getBoolean("estado_suscripciones"));
+            revista.setCosto(rs.getBigDecimal("costo").doubleValue());
+            revistas.add(revista);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Error en la base de datos: " + e.getMessage());
+    } finally {
+        conexion.cerrarConnection(conexion.getConnection());
+    }
+    return revistas;
+}
 }
