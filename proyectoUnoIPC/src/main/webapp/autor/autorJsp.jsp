@@ -119,7 +119,7 @@
                                 <br>
                             </form>
                             <br>
-                            
+
                             <!-- Botón Nuevo tomo (siempre visible) -->
                             <button onclick="mostrarFormulario('formulario${status.index}')" class="btn btn-primary btn-lg">Nuevo tomo</button>
                             <br>
@@ -136,8 +136,8 @@
                                         <button class="btn btn-primary btn-lg" type="submit" name="accion" value="meGustas">Habilitar Me gustas</button>
                                     </c:otherwise>
                                 </c:choose>
-<br>
-<br>
+                                <br>
+                                <br>
                                 <!-- Botón para Comentarios -->
                                 <c:choose>
                                     <c:when test="${revista.estadoComentarios}">
@@ -147,8 +147,8 @@
                                         <button class="btn btn-primary btn-lg" type="submit" name="accion" value="comentarios">Habilitar Comentarios</button>
                                     </c:otherwise>
                                 </c:choose>
-<br>
-<br>
+                                <br>
+                                <br>
                                 <!-- Botón para Suscripciones -->
                                 <c:choose>
                                     <c:when test="${revista.estadoSuscripciones}">
@@ -188,8 +188,8 @@
                     <br>
                     <table>
                         <tr>
-                            <th><button class="btn btn-primary btn-lg" type="button">Reporte de comentarios</button></th>
-                            <th><button class="btn btn-primary btn-lg" type="button">Reporte de suscripciones</button></th>
+                            <th><a href="repoComSvt" class="btn btn-primary btn-lg">Reporte de Comentarios</a></th>
+                            <th><a href="repoSubsSvt" class="btn btn-primary btn-lg">Reporte de suscripciones</a></th>
                             <th><button class="btn btn-primary btn-lg" type="button">Reporte de las 5 revistas más gustadas</button></th>
                         </tr>
                     </table>
