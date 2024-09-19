@@ -104,25 +104,46 @@
 
             <div class="p-5 mb-4 bg-body-terciary rounded shadow-lg">
                 <div class="container-fluid py-5">
-                    <h1 class="card-title">Listado de Revistas</h1>
-                    <br>
-
-                    <br>
-                    <br>
+                    <h1 class="card-title">Listado de Revistas</h1>            
+                    <hr>
                     <c:forEach items="${revistas}" var="revista" varStatus="status">
                         <div class="card-body">
                             <h2 class="card-title">Nombre: ${revista.nombreRevista}</h2>
-                            <h2 class="card-title">Código: ${revista.codigo}</h2>
                             <h4 class="card-subtitle mb-2 text-body-secondary">Descripción: ${revista.descripcion}</h4>
                             <h4 class="card-subtitle mb-2 text-body-secondary">Categoría: ${revista.categoria}</h4>
                             <h4 class="card-subtitle mb-2 text-body-secondary">Fecha de publicación: ${revista.fechaPublicacion}</h4>
                             <input type="hidden" name="codigo" value="${revista.codigo}">
                         </div>
+                        <form method="GET" action="${pageContext.servletContext.contextPath}/archivoSvt" enctype="multipart/form-data">     
+                            <input type="hidden" name="codigo" value="${revista.codigo}">
+                            <table >
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del Archivo</th>
+                                        <th>Ver PDF</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="tomo" items="${tomos}">
+                                        <tr>
+                                            <td>${tomo.nombre}</td>
+                                            <td>
+                                                <a href="${pageContext.request.contextPath}/archivoSvt?codigo=${revista.codigo}&nombre=${tomo.nombre}&action=verPdf" target="_blank">
+                                                    Ver PDF
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-success">Ver tomos</button>
+                            <br>
+                        </form>
+                        <br>
                         <table>
                             <tr>
                                 <!-- Botón Nuevo tomo (siempre visible) -->
                                 <th><button onclick="mostrarFormulario('formulario${status.index}')" class="btn btn-primary btn-lg">Nuevo tomo</button></th>
-
                                 <!-- Botones de Likes -->
                                 <th>
                                     <c:choose>
@@ -159,14 +180,7 @@
                             </tr>
                         </table>
                         <br>
-
-                        
-                        
-                            
-                          
-    
                         <div id="formulario${status.index}" class="formulario">
-
                             <form method="POST" action="${pageContext.servletContext.contextPath}/archivoSvt" enctype="multipart/form-data">     
                                 <label for="nombre">Nombre del archivo:</label>
                                 <input type="text" id="nombre" name="nombre" required>
@@ -175,44 +189,11 @@
                                 <input type="file" id="archivo" name="archivo" accept=".pdf" required>
                                 <br>
                                 <input type="hidden" name="codigo" value="${revista.codigo}">
-
                                 <!-- Mostrar el código para depuración -->
                                 <button type="submit" class="btn btn-success">Subir tomo</button>
                                 <br>
                             </form>
                         </div>
-                            
-                                
-                        <div >
-
-                            <form method="GET" action="${pageContext.servletContext.contextPath}/archivoSvt" enctype="multipart/form-data">     
-                                <input type="hidden" name="codigo" value="${revista.codigo}">
-                                <table >
-                                    <thead>
-                                        <tr>
-                                            <th>Nombre del Archivo</th>
-                                            <th>Ver PDF</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach var="tomo" items="${tomos}">
-                                            <tr>
-                                                <td>${tomo.nombre}</td>
-                                                <td>
-                                                    <a href="${pageContext.request.contextPath}/archivoSvt?codigo=${revista.codigo}&nombre=${tomo.nombre}&action=verPdf" target="_blank">
-    Ver PDF
-</a>
-
-                                                </td>
-                                            </tr>
-                                        </c:forEach>
-                                    </tbody>
-                                </table>
-                                <button type="submit" class="btn btn-success">Ver tomos</button>
-                                <br>
-                            </form>
-                        </div>
-
                         <hr>
                     </c:forEach>
                 </div>

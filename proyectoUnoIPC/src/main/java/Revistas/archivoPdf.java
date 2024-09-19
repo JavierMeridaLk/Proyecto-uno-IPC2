@@ -17,6 +17,7 @@ import java.util.List;
  * @author xavi
  */
 public class archivoPdf {
+
     private String nombre;
     private int noRevista;
     private byte[] archivo;
@@ -47,34 +48,32 @@ public class archivoPdf {
     public void setArchivo(byte[] archivo) {
         this.archivo = archivo;
     }
-    
-     public void guardarTomo(archivoPdf tomo) throws SQLException {
+
+    public void guardarTomo(archivoPdf tomo) throws SQLException {
         String sql = "INSERT INTO TOMO (no_revista, nombre_archivo, archivo) VALUES (?, ?, ?)";
-         conexionDB conexion = new conexionDB();
-         try {
-             PreparedStatement stmt = conexion.getConnection().prepareStatement(sql);
-             stmt.setInt(1, tomo.getNoRevista());
+        conexionDB conexion = new conexionDB();
+        try {
+            PreparedStatement stmt = conexion.getConnection().prepareStatement(sql);
+            stmt.setInt(1, tomo.getNoRevista());
             stmt.setString(2, tomo.getNombre());
             stmt.setBytes(3, tomo.getArchivo());
-            
             stmt.executeUpdate();
-         } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                conexion.cerrarConnection(conexion.getConnection());
-            }
- 
-        
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            conexion.cerrarConnection(conexion.getConnection());
+        }
+
     }
-     public List<archivoPdf> obtenerTomos(int noRevista) throws SQLException {
-         
+
+    public List<archivoPdf> obtenerTomos(int noRevista) throws SQLException {
+
         List<archivoPdf> tomos = new ArrayList<>();
         String sql = "SELECT nombre_archivo, archivo FROM TOMO WHERE no_revista = ?";
-        
+
         conexionDB conexion = new conexionDB();
-        try (Connection conn = conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+        try (Connection conn = conexion.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, noRevista);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -91,7 +90,5 @@ public class archivoPdf {
             conexion.cerrarConnection(conexion.getConnection());
         }
         return tomos;
-     }
-        
-    
+    }
 }

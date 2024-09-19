@@ -45,12 +45,24 @@ public class nuevaRevistasSvt extends HttpServlet {
             List<Revista> revistas = revista.obtenerTodasLasRevistasDelAutor(userName);
             // Establece las revistas en el request
             request.setAttribute("revistas", revistas);
+            
             // Redirige a la JSP
             request.getRequestDispatcher("/autor/autorJsp.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
             response.getWriter().println("Error al obtener las revistas.");
         }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     }
 
     @Override
