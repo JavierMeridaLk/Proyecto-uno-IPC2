@@ -130,7 +130,7 @@ public class Revista {
             while (rs.next()) {
                 Revista revista = new Revista();
                 
-                
+                revista.setCodigo(rs.getInt("cod_revista"));
                 revista.setNombreAutor(rs.getString("user_autor"));
                 revista.setNombreRevista(rs.getString("nombre_revista"));
                 revista.setFechaPublicacion(rs.getDate("fecha_publicacion").toLocalDate());

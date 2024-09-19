@@ -16,7 +16,29 @@
             #formNuevaRevista {
                 display: none;
             }
+            /* Estilo para ocultar los formularios inicialmente */
+            .formulario {
+                display: none;
+                margin-top: 20px;
+            }
+            .formulario1 {
+                display: none;
+                margin-top: 20px;
+            }
         </style>
+
+        <script>
+            // Función para mostrar o ocultar el formulario específico
+            function mostrarFormulario(idFormulario) {
+                var formulario = document.getElementById(idFormulario);
+                var display = window.getComputedStyle(formulario).display;
+                if (display === "none") {
+                    formulario.style.display = "block";
+                } else {
+                    formulario.style.display = "none";
+                }
+            }
+        </script>
     </head>
     <body>
 
@@ -79,66 +101,123 @@
                 </div>
             </div>
             <br><!-- comment -->
-            <form method="GET" action="${pageContext.servletContext.contextPath}/nuevaRevistasSvt">
-                <div class="p-5 mb-4 bg-body-terciary rounded shadow-lg">
-                    <div class="container-fluid py-5">
-                        <h1 class="card-title">Listado de Revistas</h1>
+
+            <div class="p-5 mb-4 bg-body-terciary rounded shadow-lg">
+                <div class="container-fluid py-5">
+                    <h1 class="card-title">Listado de Revistas</h1>
+                    <br>
+
+                    <br>
+                    <br>
+                    <c:forEach items="${revistas}" var="revista" varStatus="status">
+                        <div class="card-body">
+                            <h2 class="card-title">Nombre: ${revista.nombreRevista}</h2>
+                            <h2 class="card-title">Código: ${revista.codigo}</h2>
+                            <h4 class="card-subtitle mb-2 text-body-secondary">Descripción: ${revista.descripcion}</h4>
+                            <h4 class="card-subtitle mb-2 text-body-secondary">Categoría: ${revista.categoria}</h4>
+                            <h4 class="card-subtitle mb-2 text-body-secondary">Fecha de publicación: ${revista.fechaPublicacion}</h4>
+                            <input type="hidden" name="codigo" value="${revista.codigo}">
+                        </div>
+                        <table>
+                            <tr>
+                                <!-- Botón Nuevo tomo (siempre visible) -->
+                                <th><button onclick="mostrarFormulario('formulario${status.index}')" class="btn btn-primary btn-lg">Nuevo tomo</button></th>
+
+                                <!-- Botones de Likes -->
+                                <th>
+                                    <c:choose>
+                                        <c:when test="${revista.estadoMeGustas}">
+                                            <button class="btn btn-primary btn-lg" type="button">Deshabilitar Me gustas</button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button class="btn btn-primary btn-lg" type="button">Habilitar Me gustas</button>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </th>
+                                <!-- Botones de Comentarios -->
+                                <th>
+                                    <c:choose>
+                                        <c:when test="${revista.estadoComentarios}">
+                                            <button class="btn btn-primary btn-lg" type="button">Deshabilitar Comentarios</button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button class="btn btn-primary btn-lg" type="button">Habilitar Comentarios</button>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </th>
+                                <!-- Botones de Suscripciones -->
+                                <th>
+                                    <c:choose>
+                                        <c:when test="${revista.estadoSuscripciones}">
+                                            <button class="btn btn-primary btn-lg" type="button">Deshabilitar Suscripciones</button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button class="btn btn-primary btn-lg" type="button">Habilitar Suscripciones</button>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </th>
+                            </tr>
+                        </table>
                         <br>
-                        <button class="btn btn-primary btn-lg" type="submit">Desplegar listado de revistas</button>
-                        <br>
-                        <br>
-                        <c:forEach items="${revistas}" var="revista">
-                            <!-- Aquí puedes usar la variable 'revista' para acceder a las propiedades -->
-                            <div class="card-body">
-                                <h2 class="card-title">Nombre: ${revista.nombreRevista}</h2>
-                                <h4 class="card-subtitle mb-2 text-body-secondary">Descripción: ${revista.descripcion}</h4>
-                                <h4 class="card-subtitle mb-2 text-body-secondary">Categoría: ${revista.categoria}</h4>
-                                <h4 class="card-subtitle mb-2 text-body-secondary">Fecha de publicación: ${revista.fechaPublicacion}</h4>
-                            </div>
-                            <table>
-                                <tr>
-                                    <!-- Botón Nuevo tomo (siempre visible) -->
-                                    <th><button class="btn btn-primary btn-lg" type="button">Nuevo tomo</button></th>
-                                    <!-- Botones de Likes -->
-                                    <th>
-                                        <c:choose>
-                                            <c:when test="${revista.estadoMeGustas}">
-                                                <button class="btn btn-primary btn-lg" type="button">Deshabilitar Me gustas</button>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <button class="btn btn-primary btn-lg" type="button">Habilitar Me gustas</button>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </th>
-                                    <!-- Botones de Comentarios -->
-                                    <th>
-                                        <c:choose>
-                                            <c:when test="${revista.estadoComentarios}">
-                                                <button class="btn btn-primary btn-lg" type="button">Deshabilitar Comentarios</button>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <button class="btn btn-primary btn-lg" type="button">Habilitar Comentarios</button>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </th>
-                                    <!-- Botones de Suscripciones -->
-                                    <th>
-                                        <c:choose>
-                                            <c:when test="${revista.estadoSuscripciones}">
-                                                <button class="btn btn-primary btn-lg" type="button">Deshabilitar Suscripciones</button>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <button class="btn btn-primary btn-lg" type="button">Habilitar Suscripciones</button>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </th>
-                                </tr>
-                            </table>
-                            <hr>
-                        </c:forEach>
-                    </div>
+
+                        
+                        
+                            
+                          
+    
+                        <div id="formulario${status.index}" class="formulario">
+
+                            <form method="POST" action="${pageContext.servletContext.contextPath}/archivoSvt" enctype="multipart/form-data">     
+                                <label for="nombre">Nombre del archivo:</label>
+                                <input type="text" id="nombre" name="nombre" required>
+                                <br><br>
+                                <label for="archivo">Seleccionar archivo PDF:</label>
+                                <input type="file" id="archivo" name="archivo" accept=".pdf" required>
+                                <br>
+                                <input type="hidden" name="codigo" value="${revista.codigo}">
+
+                                <!-- Mostrar el código para depuración -->
+                                <button type="submit" class="btn btn-success">Subir tomo</button>
+                                <br>
+                            </form>
+                        </div>
+                            
+                                
+                        <div >
+
+                            <form method="GET" action="${pageContext.servletContext.contextPath}/archivoSvt" enctype="multipart/form-data">     
+                                <input type="hidden" name="codigo" value="${revista.codigo}">
+                                <table >
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre del Archivo</th>
+                                            <th>Ver PDF</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="tomo" items="${tomos}">
+                                            <tr>
+                                                <td>${tomo.nombre}</td>
+                                                <td>
+                                                    <a href="${pageContext.request.contextPath}/archivoSvt?codigo=${revista.codigo}&nombre=${tomo.nombre}&action=verPdf" target="_blank">
+    Ver PDF
+</a>
+
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                                <button type="submit" class="btn btn-success">Ver tomos</button>
+                                <br>
+                            </form>
+                        </div>
+
+                        <hr>
+                    </c:forEach>
                 </div>
-            </form>
+            </div>
+
             <br>
             <div class="p-5 mb-4 bg-body-tertiary rounded shadow-lg">
                 <div class="container-fluid py-5">
